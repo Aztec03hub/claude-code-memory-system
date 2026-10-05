@@ -85,6 +85,13 @@ def main():
         if stem.endswith(".md"):
             stem = stem[:-3]
         qs = questions if isinstance(questions, list) else (questions or {}).get("queries") or []
+        if not os.path.exists(key):
+            # A sidecar entry for a memory that has been deleted or renamed. Its questions
+            # can never retrieve anything, so counting them as `absent` manufactures exactly
+            # the unretrievable population this banding is used to look for: 6 such entries
+            # were the entire "100% of its own questions fail" tier on 2026-10-05.
+            band["skipped"] += len(qs)
+            continue
         kept = 0
         for q in qs:
             if not isinstance(q, str) or len(q) < 25:
@@ -96,16 +103,23 @@ def main():
             expr = " OR ".join('"%s"' % t for t in terms)
             try:
                 rows = con.execute(
-                    "SELECT name FROM mem WHERE mem MATCH ? "
+                    "SELECT path FROM mem WHERE mem MATCH ? "
                     "ORDER BY bm25(mem,3.0,5.0,1.0,0,0,0,0,0) LIMIT ?",
                     (expr, CAND_WINDOW)).fetchall()
             except Exception:
                 band["skipped"] += 1
                 continue
-            t = norm(stem)
+            # MATCH ON PATH, EXACTLY. This used to select the `name` column and compare it
+            # to the filename stem with two-way substring containment, and that overstated
+            # `absent` by about 2x: a memory's frontmatter `name` is hyphenated and often
+            # rewritten, so for 288 of 542 "absent" readings the memory WAS in the window
+            # and the matcher could not see it. The 13.0% absent rate this printed is really
+            # 6.1%. Same filename-vs-frontmatter-name confusion as show-pairs.py records,
+            # third occurrence. doc2query is keyed by path, the DB stores path, so compare
+            # those and nothing else.
             rank = None
-            for i, (nm,) in enumerate(rows, 1):
-                if t and (t in norm(nm) or norm(nm) in t):
+            for i, (pth,) in enumerate(rows, 1):
+                if os.path.basename(pth)[:-3] == stem:
                     rank = i
                     break
             if rank is None:

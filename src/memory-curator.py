@@ -1961,8 +1961,15 @@ def write_memory(rec, reason=""):
     related = ""
     try:
         con = sqlite3.connect(DB_PATH)
-        terms = list(_toks(rec["name"].replace("-", " ") + " " + rec["description"]))[:12]
+        # Ordered, not a sliced set: `_toks` returns a set, so `list(...)[:12]` kept
+        # whichever terms hash order put first. Same defect as coverage_candidates had.
+        terms = sorted(_toks(rec["name"].replace("-", " ") + " " + rec["description"]),
+                       key=lambda t: (-len(t), t))[:12]
         if terms:
+            # matcher-guard: display only. The frontmatter `name` is correct HERE, because
+            # this list is shown to the writing model so it can emit [[name]] links, which
+            # are frontmatter names by the memory format. Nothing is matched on it. Every
+            # other use of this column in this repo was a bug; see test_matcher_uses_path.py.
             related = ", ".join(h[0] for h in con.execute(
                 "SELECT name FROM mem WHERE mem MATCH ? "
                 "ORDER BY bm25(mem,3.0,5.0,1.0,0,0,0,0,0) LIMIT 5",
@@ -2647,6 +2654,31 @@ def cmd_gaps(args):
     return 0
 
 
+def prune_doc2query():
+    """Drop doc2query entries whose memory file is gone. Returns how many.
+
+    A sidecar entry for a deleted or renamed memory is not merely dead weight, it
+    MANUFACTURES A FINDING. The retrievability audit scores each memory's generated
+    questions and reports the ones nothing can retrieve; an entry with no file behind it
+    fails every question by construction, so it lands at the top of that report looking
+    exactly like a real memory that nobody can reach. MEASURED 2026-10-05: 6 such entries
+    were the ENTIRE "100% of its own questions fail" tier, and they are the reason the
+    report has to check the file exists rather than trusting the key.
+
+    Keyed by absolute path, so a rename leaves the old key behind with no error anywhere.
+    """
+    if not os.path.exists(Q2Q_PATH):
+        return 0
+    data = json.loads(open(Q2Q_PATH, encoding="utf-8").read())
+    live_keys = {k: v for k, v in data.items() if os.path.exists(k)}
+    dropped = len(data) - len(live_keys)
+    if dropped:
+        tmp = "%s.tmp.%d" % (Q2Q_PATH, os.getpid())
+        open(tmp, "w", encoding="utf-8").write(json.dumps(live_keys, ensure_ascii=False))
+        os.replace(tmp, Q2Q_PATH)
+    return dropped
+
+
 def cmd_prune(args):
     """Retention. Everything here grows without bound and nothing was trimming it.
 
@@ -2738,6 +2770,12 @@ def cmd_prune(args):
             freed.append("organ-health: dropped %d old rows" % n)
     except Exception:
         oops("cmd_prune.health")
+    try:
+        n = prune_doc2query()
+        if n:
+            freed.append("doc2query: dropped %d entries for deleted memories" % n)
+    except Exception:
+        oops("cmd_prune.doc2query")
 
     if freed:
         for f in freed:
