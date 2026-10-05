@@ -1281,6 +1281,87 @@ def containment(small, big):
     return len(small & big) / float(len(small))
 
 
+COVER_LIMIT = 12         # candidates the coverage check considers
+COVER_TERMS = 14         # query terms taken from the proposal description
+
+
+def nearest_memories(descriptions, k=3):
+    """{description: [memory stem, ...]} using the PRODUCTION searcher, reranker included.
+
+    WHY THIS IS NOT THE COVERAGE CHECK IN cmd_propose. The two want different trade-offs,
+    and the measurement is unambiguous (coverage-calibration.json, 19 hand-ruled pairs):
+
+        cmd_propose's lexical candidates, cited memory found    5/19
+        production search() WITHOUT the reranker                5/19
+        production search() WITH the reranker                  12/19
+
+    The whole gain is the rerank, because a proposal's description is written in generic
+    vocabulary ("verify", "strategy", "server-side") while the memory that already covers it
+    is written in specific vocabulary ("Retry-After", "511", "msisdn"), and BM25 cannot
+    bridge that. So the good instrument costs an LLM call per proposal, which is why it runs
+    HERE, on the handful a reviewer actually looks at, and not in cmd_propose on all of them.
+    cmd_propose keeps the cheap lexical check for the `refine` downgrade it has to do inline.
+
+    This exists because of what the 19 cases cost by hand: 19 of the 22 hottest proposals
+    were duplicates of an existing memory, five of them REFUTED by a memory the same session
+    wrote later, and finding that out meant a manual search per proposal. Printing the
+    nearest memories next to the proposal turns each of those rulings into a glance.
+
+    Fails open to {}: a missing key or a dead searcher must degrade the display, not break
+    the review.
+    """
+    if not descriptions:
+        return {}
+    try:
+        import importlib.util
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "memory-search.py")
+        spec = importlib.util.spec_from_file_location("memory_search", path)
+        ms = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(ms)
+        ms.ensure_fresh(ms.source_files())
+    except Exception:
+        oops("nearest_memories.load")
+        return {}
+    out = {}
+    for desc in descriptions:
+        try:
+            terms = ms.make_terms(desc)
+            if len(terms) < 2:
+                continue
+            hits = ms.search(" OR ".join('"%s"' % t for t in terms), terms,
+                             raw_prompt=desc) or []
+            names = []
+            for h in hits:
+                paths = [x for x in h if isinstance(x, str) and x.endswith(".md")]
+                if paths:
+                    names.append(os.path.basename(paths[0])[:-3])
+            out[desc] = names[:k]
+        except Exception:
+            oops("nearest_memories.search")
+    return out
+
+
+def coverage_candidates(con, desc):
+    """Existing memories that might already cover a proposal: (name, description) rows.
+
+    ONE definition, because measure-coverage-check.py scores this exact function against the
+    19 hand-ruled pairs in coverage-calibration.json. An inlined copy in the measuring script
+    is how a calibration row ends up describing behaviour the code stopped having: the first
+    version of that script hardcoded the old term handling and kept reporting 2/19 after the
+    fix landed.
+
+    Terms are LONGEST FIRST and that is a bug fix, not tuning: `_toks` returns a set, so the
+    old `list(_toks(desc))[:14]` kept whichever terms hash order put first.
+    """
+    terms = sorted(_toks(desc), key=lambda t: (-len(t), t))[:COVER_TERMS]
+    if not terms:
+        return []
+    return con.execute(
+        "SELECT name, description FROM mem WHERE mem MATCH ? "
+        "ORDER BY bm25(mem,3.0,5.0,1.0,0,0,0,0,0) LIMIT ?",
+        (" OR ".join('"%s"' % t for t in terms), COVER_LIMIT)).fetchall()
+
+
 def prop_id(name):
     import hashlib
     return hashlib.sha1(re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-").encode()
@@ -1541,7 +1622,17 @@ def hold_stale_proposals(dry=False):
         if not stamps:
             continue
         try:
-            age = (now - datetime.datetime.fromisoformat(max(stamps)[:19])).days
+            # FIRST occurrence, not last, and the difference decides whether this rule works
+            # at all. MEASURED 2026-10-05: with `max(stamps)` the hold would have fired on
+            # 0 of 376 open proposals, because every one was single-session and the three
+            # sessions holding 240 of them were STILL RUNNING - a weeks-long session keeps
+            # re-emitting its own lessons, so `last seen` never ages past today and the queue
+            # is monotonic exactly as before. `min(stamps)` asks the question this rule is
+            # for: how long has this lesson sat WITHOUT a second session confirming it. On
+            # the same data that held 34 immediately and bounds the queue at ~14 days of
+            # inflow. Within-session repeats are not independent evidence anyway, which is
+            # why HEAT_SESSION_CAP already refuses to count them past 2.5.
+            age = (now - datetime.datetime.fromisoformat(min(stamps)[:19])).days
         except Exception:
             continue                      # an unparsable stamp is not grounds to close
         if age < STALE_HOLD_DAYS:
@@ -1723,11 +1814,12 @@ def _propose(args):
             #    still surfaces, but it never auto-creates a twin of a memory we have.
             pid = prop_id(name)
             try:
-                terms = list(_toks(desc))[:14]
-                hits = con.execute(
-                    "SELECT name, description FROM mem WHERE mem MATCH ? "
-                    "ORDER BY bm25(mem,3.0,5.0,1.0,0,0,0,0,0) LIMIT 3",
-                    (" OR ".join('"%s"' % x for x in terms),)).fetchall() if terms else []
+                # MEASURED on the 19 hand-ruled pairs in coverage-calibration.json: the
+                # deterministic terms and the wider limit move candidate recall 2/19 ->
+                # 5/19. The rest of the gap is NOT a threshold problem, so COVER_J is
+                # deliberately left alone - measure-coverage-check.py scores
+                # coverage_candidates() itself, which is why this is a call and not a query.
+                hits = coverage_candidates(con, desc)
             except Exception:
                 oops("cmd_propose.cover")
                 hits = []
@@ -2092,7 +2184,10 @@ def cmd_proposed(args):
         print("\n  fold one in with:  approve <id> revise --note '...'\n")
     print("%d open memory proposal(s). Auto-creates at heat %.1f.\n"
           % (len(openp), HEAT_CREATE))
-    for r in sorted(openp.values(), key=lambda x: -x["heat"]):
+    rows = sorted(openp.values(), key=lambda x: -x["heat"])
+    limit = getattr(args, "limit", 0) or 0
+    nearest = nearest_memories([r["description"] for r in rows[:limit]]) if limit else {}
+    for r in rows[:limit] if limit else rows:
         bar = "#" * int(min(r["heat"], HEAT_CREATE) / HEAT_CREATE * 12)
         print("  [%s] heat %4.2f |%-12s| %s%s"
               % (r["pid"], r["heat"], bar, r["name"],
@@ -2100,6 +2195,11 @@ def cmd_proposed(args):
         print("       %s" % r["description"][:96])
         print("       %d occurrence(s) across %d session(s)"
               % (len(r["occurrences"]), len({o.get("session") for o in r["occurrences"]})))
+        for n in nearest.get(r["description"], []):
+            print("       nearest existing: %s" % n)
+    if limit and len(rows) > limit:
+        print("\n  ... and %d more. --limit N shows more, and only the shown ones pay for "
+              "their\n  `nearest existing` lookup." % (len(rows) - limit))
     print("\nrule on one with:")
     print("  python3 %s approve <id> create|reject|hold --note '...'"
           % os.path.basename(__file__))
@@ -2857,6 +2957,9 @@ def main():
     pp.add_argument("--dry", action="store_true", help="queue and heat, but write nothing")
     pp.set_defaults(func=cmd_propose)
     pl = sub.add_parser("proposed", help="proposed memories and their heat")
+    pl.add_argument("--limit", type=int, default=0,
+                    help="show only the N hottest, each with the nearest existing memories "
+                         "(an LLM rerank per shown row, so the default shows none)")
     pl.set_defaults(func=cmd_proposed)
     hh = sub.add_parser("health", help="LLM organ health: per-organ success RATE and verdict")
     hh.set_defaults(func=lambda a: cmd_health(a))

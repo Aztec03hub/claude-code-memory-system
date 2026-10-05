@@ -116,12 +116,30 @@ def main() -> int:
 
         # And it must be idempotent: running twice must not double-write or reopen.
         assert mc.hold_stale_proposals() == 0, "nothing left to hold on a second pass"
+
+        # THE LONG-SESSION CASE, and it is the one that made this rule a no-op in practice.
+        # A weeks-long session keeps re-emitting the same lesson, so the LAST occurrence is
+        # always today while the FIRST is months back. Measured on the real log: the rule
+        # read `max(stamps)` and held 0 of 376, because the three sessions holding 240 of
+        # them were still running. The hold must look at how long the lesson has gone
+        # WITHOUT a second session confirming it, which is the first stamp.
+        with open(log, "w") as fh:
+            for i, days in enumerate([mc.STALE_HOLD_DAYS + 20, 10, 3, 0]):
+                ts = (datetime.datetime.now()
+                      - datetime.timedelta(days=days)).isoformat(timespec="seconds")
+                fh.write(json.dumps({"event": "propose", "pid": "ddd",
+                                     "name": "long-running-session", "ts": ts,
+                                     "session": "s1", "tid": "L%d" % i,
+                                     "description": "d", "mtype": "reference"}) + "\n")
+        assert mc.hold_stale_proposals(dry=True) == 1, \
+            "a single session still emitting today must be held on its FIRST stamp"
     finally:
         mc.MEM_PROPOSALS_PATH, mc.ROLLUP_PATH = saved_path, saved_rollup
 
     print("OK: promotion needs 2 sessions and 1 can never reach it; within-session "
           "recurrence still counts and still orders the queue; stale single-session "
-          "proposals are held, recurring and fresh ones are not, and a hold reopens.")
+          "proposals are held, recurring and fresh ones are not, a hold reopens, and a "
+          "still-running long session is held on its first stamp rather than never.")
     return 0
 
 
