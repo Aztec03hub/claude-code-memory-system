@@ -1,0 +1,157 @@
+[
+ {
+  "q": "Why is my security filter passing all its tests but never actually catching anything in production?",
+  "target": "the-code-and-its-test-can-share-one-false-premise-about-the-input",
+  "rank": 28
+ },
+ {
+  "q": "Why did my script say everything was fine even though I accidentally committed a bad file?",
+  "target": "feedback_a_gate_run_without_ci_s_flags_is_a_different_weaker_question",
+  "rank": 45
+ },
+ {
+  "q": "Why does my build time look so much faster than the individual agent run time?",
+  "target": "a-parallel-wall-clock-is-not-comparable-to-serial-agent-time",
+  "rank": 5
+ },
+ {
+  "q": "Why did I get different results when I thought I was looking at the same branch?",
+  "target": "same_slug_different_prefix_branches",
+  "rank": 10
+ },
+ {
+  "q": "Why did we all just blindly trust that weird latency spike instead of double-checking the data?",
+  "target": "a-false-fail-is-more-dangerous-than-a-false-pass",
+  "rank": 8
+ },
+ {
+  "q": "How can I stop my scripts from giving me fake-looking \"correct\" answers when they're actually grabbing the wrong data?",
+  "target": "verification_scripts_compare_the_wrong_object",
+  "rank": 32
+ },
+ {
+  "q": "Why do my references keep pointing to the wrong version of my code even when the name hasn't changed?",
+  "target": "a_name_can_outlive_the_thing_it_named",
+  "rank": 13
+ },
+ {
+  "q": "How can I be sure my tests are actually working if they\u2019re passing or failing based on old data?",
+  "target": "a_gate_that_fires_on_the_only_corpus_you_have",
+  "rank": 12,
+  "accept": [
+   "positive_controls",
+   "a_control_that_never_runs_the_artifact",
+   "feedback_the_apk_on_disk_is_not_the_apk_on_the_device"
+  ]
+ },
+ {
+  "q": "Is it okay to delete a feature if I\u2019m pretty sure it\u2019s going to break something else?",
+  "target": "Never assume and remove features without research and approval",
+  "rank": 15
+ },
+ {
+  "q": "Why did my search commands say those files didn't exist when I was literally just writing to them?",
+  "target": "an_absence_is_a_claim_about_where_i_looked",
+  "rank": 5,
+  "accept": [
+   "a_search_at_a_path_that_does_not_exist_returns_a_clean_empty",
+   "reference_bare_grep_in_the_bash_tool_is_claude_codes_ugrep_shim_that_skips_gitignored_and_binary_files"
+  ]
+ },
+ {
+  "q": "Why did my performance test show everything was fine even though I know the app is lagging?",
+  "target": "a-sound-instrument-can-still-be-sampled-too-coarsely-to-see-the-defect",
+  "rank": 18
+ },
+ {
+  "q": "How do I stop my documentation from getting out of sync with the code after I refactor or rename functions?",
+  "target": "a-historical-claim-written-in-present-identifiers-is-false-when-written",
+  "rank": 3,
+  "accept": [
+   "a_rename_leaves_inbound_links_dangling",
+   "an-edit-to-a-line-cited-document-owes-the-repoint-step"
+  ]
+ },
+ {
+  "q": "Why is my test passing even though I just deleted the field it uses to find data?",
+  "target": "a_guards_selector_can_be_keyed_on_the_vanished_property",
+  "rank": 49
+ },
+ {
+  "q": "Why are my tests passing even though I'm setting the expiration time to something ridiculous?",
+  "target": "injecting-config-into-a-test-makes-the-shipped-default-untested",
+  "rank": 9
+ },
+ {
+  "q": "How do I stop assuming my code is working just because I finished writing the configuration or the function?",
+  "target": "feedback_i_check_the_config_i_wrote_not_the_behaviour_i_got",
+  "rank": 24
+ },
+ {
+  "q": "Why is my subagent ignoring my instructions to override its original restrictions even when I tell it that I\u2019m the one giving the order?",
+  "target": "feedback_subagent_authority_first_person_not_relay",
+  "rank": 3
+ },
+ {
+  "q": "Why do I keep making mistakes when I assume my code logic or process is correct without actually testing it?",
+  "target": "procedural_claims_need_verification_too",
+  "rank": 15,
+  "accept": [
+   "verification-over-assumption-strategy"
+  ]
+ },
+ {
+  "q": "Why does my script keep saying the agent is busy even when it's just sitting there doing nothing?",
+  "target": "my_liveness_check_reads_a_sleeping_agent_as_working",
+  "rank": 6
+ },
+ {
+  "q": "Why are my Playwright tests suddenly failing in CI when they weren't running before?",
+  "target": "reference_claude_comms_ci_test_gating",
+  "rank": 6
+ },
+ {
+  "q": "How can I stop using `sleep` commands to wait for my scripts to finish without making my code flaky or slow?",
+  "target": "feedback_never_sleep_when_an_event_can_wake_you",
+  "rank": 4
+ },
+ {
+  "q": "Why do I keep trusting the library's documentation over my own existing code even when I know better?",
+  "target": "feedback_the_refutation_was_already_in_my_own_repository",
+  "rank": 9,
+  "accept": [
+   "a_spec_saying_required_describes_intent_not_reality"
+  ]
+ },
+ {
+  "q": "How do I know if I should be updating the docs or changing the code after I've made a design decision?",
+  "target": "a-decision-document-must-be-checked-against-the-code-before-it-is-applied",
+  "rank": 6
+ },
+ {
+  "q": "Where can I find the official documentation for the current project orchestration workflow?",
+  "target": "reference_three_tier_sub_orchestrator_protocol",
+  "rank": 3
+ },
+ {
+  "q": "Do I have to clear every single bug before I move on to the next batch size, or can I just keep pushing forward and fix them later?",
+  "target": "resolve_all_issues_before_climbing_the_ladder",
+  "rank": 30
+ },
+ {
+  "q": "Why did my PR break main even though all the unit tests passed?",
+  "target": "feedback_claude_comms_e2e_source_pins_stacked_pr_ci",
+  "rank": 21,
+  "accept": [
+   "run_the_full_gate_before_folding_not_after"
+  ]
+ },
+ {
+  "q": "How do I get the AI to stop missing bugs that have been hiding in plain sight for multiple rounds?",
+  "target": "one_undirected_instruction_per_round_finds_what_the_shape_list_steers_away_from",
+  "rank": 30,
+  "accept": [
+   "fresh_reviewer_every_round_until_clean"
+  ]
+ }
+]

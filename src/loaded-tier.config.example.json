@@ -1,0 +1,58 @@
+{
+  "_comment": [
+    "Which memories go in the LOADED tier (MEMORY.md), selected by FUNCTION.",
+    "",
+    "The one question to apply to every candidate: WOULD QUERY-TIME SEARCH FIND THIS WHEN IT",
+    "IS NEEDED? If the prompt that should trigger the rule contains the rule's own vocabulary,",
+    "search finds it and it does NOT belong here. If it does not - a scheduling preference, a",
+    "model choice, a name spelling, a person - search cannot help and the rule has to be",
+    "unconditional. Technical references in particular do not belong here: that is exactly",
+    "what the searcher is good at.",
+    "",
+    "Copy this to loaded-tier.config.json (gitignored) and put your own slugs in. Each name",
+    "is a memory FILENAME without the .md, and a name with no file on disk is skipped with a",
+    "warning rather than failing the build."
+  ],
+
+  "ALWAYS": [
+    {
+      "section": "Writing and communication",
+      "memories": [
+        "feedback_no_em_dashes_hyphens_ok",
+        "user_user_style_preference"
+      ]
+    },
+    {
+      "section": "Memory",
+      "memories": [
+        "feedback_noticing_a_failure_is_not_recording_it",
+        "feedback_memory_index_ceiling_400"
+      ]
+    },
+    {
+      "section": "Git and cost authority",
+      "memories": [
+        "feedback_never_add_coauthored_by_trailers",
+        "feedback_force_with_lease_never_bare_force"
+      ]
+    },
+    {
+      "section": "Dispatching agents",
+      "memories": [
+        "reference_agent_brief_template",
+        "feedback_implementation_agents_use_sonnet"
+      ]
+    },
+    {
+      "section": "Tooling that silently changes what I see",
+      "memories": [
+        "reference_headroom_retrieval_footer_and_detection"
+      ]
+    }
+  ],
+
+  "MAP": [
+    "project_example_live_project",
+    "reference_example_must_read_docs"
+  ]
+}

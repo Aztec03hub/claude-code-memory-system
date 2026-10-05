@@ -1,0 +1,389 @@
+<title>Agent Memory, Graded</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#F2F4F1; --card:#FBFCFA; --ink:#1B211E; --ink-2:#4A544E; --ink-3:#78827B;
+    --rule:#D9DFD8; --rule-2:#C3CBC2;
+    --accent:#3F6E62; --accent-soft:#E3EDE8;
+    --amber:#8F6520; --amber-soft:#F3EADA;
+    --brick:#8E4433; --brick-soft:#F4E4E0;
+    --verified:#2F6046; --verified-soft:#E1EDE5;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#131715; --card:#1A1F1C; --ink:#E7EBE6; --ink-2:#AAB4AC; --ink-3:#7D8880;
+      --rule:#2A312C; --rule-2:#3A423C;
+      --accent:#7FB8A6; --accent-soft:#1E2A26;
+      --amber:#D6A85E; --amber-soft:#2A2318;
+      --brick:#D28873; --brick-soft:#2B1D19;
+      --verified:#7FC49B; --verified-soft:#16241C;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131715; --card:#1A1F1C; --ink:#E7EBE6; --ink-2:#AAB4AC; --ink-3:#7D8880;
+    --rule:#2A312C; --rule-2:#3A423C;
+    --accent:#7FB8A6; --accent-soft:#1E2A26;
+    --amber:#D6A85E; --amber-soft:#2A2318;
+    --brick:#D28873; --brick-soft:#2B1D19;
+    --verified:#7FC49B; --verified-soft:#16241C;
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.62;
+    padding-block:56px 80px; padding-left:20px; padding-right:20px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px; margin:0 auto; display:flex; flex-direction:column; gap:52px}
+  h1,h2,h3{font-family:Newsreader,Georgia,serif; font-weight:600; text-wrap:balance; margin:0; line-height:1.18}
+  h1{font-size:clamp(2.1rem,5.2vw,3.1rem); letter-spacing:-.015em}
+  h2{font-size:clamp(1.45rem,3.2vw,1.85rem); letter-spacing:-.01em}
+  h3{font-size:1.08rem; font-family:"IBM Plex Sans",sans-serif; font-weight:600; letter-spacing:-.005em}
+  p{margin:0}
+  a{color:var(--accent); text-underline-offset:3px}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-3);
+  }
+  header{display:flex; flex-direction:column; gap:14px; border-bottom:2px solid var(--ink); padding-bottom:26px}
+  .dateline{display:flex; flex-wrap:wrap; gap:8px 18px; font-family:"IBM Plex Mono",monospace; font-size:.76rem; color:var(--ink-2)}
+  .lede{font-family:Newsreader,Georgia,serif; font-size:1.24rem; line-height:1.55; color:var(--ink-2); max-width:64ch}
+  section{display:flex; flex-direction:column; gap:20px}
+  .sec-head{display:flex; flex-direction:column; gap:6px}
+  .prose{display:flex; flex-direction:column; gap:14px; max-width:66ch}
+
+  /* provenance stamps */
+  .stamp{
+    display:inline-flex; align-items:center; gap:5px; white-space:nowrap;
+    font-family:"IBM Plex Mono",monospace; font-size:.66rem; font-weight:500;
+    letter-spacing:.07em; text-transform:uppercase;
+    padding:2px 7px; border-radius:2px; border:1px solid currentColor;
+  }
+  .s-v{color:var(--verified); background:var(--verified-soft)}
+  .s-a{color:var(--accent); background:var(--accent-soft)}
+  .s-c{color:var(--amber); background:var(--amber-soft)}
+  .s-u{color:var(--brick); background:var(--brick-soft)}
+  .legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px 22px;
+    border:1px solid var(--rule); border-radius:3px; padding:20px; background:var(--card)}
+  .legend div{display:flex; flex-direction:column; gap:6px; font-size:.86rem; color:var(--ink-2)}
+
+  /* verdict */
+  .verdict{border-left:3px solid var(--accent); padding:4px 0 4px 22px; display:flex; flex-direction:column; gap:14px}
+  .verdict p{max-width:64ch}
+  .verdict strong{color:var(--ink)}
+
+  /* ledger entries */
+  .entry{border-top:1px solid var(--rule); padding-top:18px; display:flex; flex-direction:column; gap:10px}
+  .entry-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 12px}
+  .entry-head .name{font-size:1.05rem; font-weight:600}
+  .facts{font-family:"IBM Plex Mono",monospace; font-size:.74rem; color:var(--ink-3); font-variant-numeric:tabular-nums}
+  .entry p{font-size:.94rem; color:var(--ink-2); max-width:66ch}
+  .verdict-line{font-size:.9rem; color:var(--ink)}
+  .cat{display:flex; flex-direction:column; gap:8px; margin-top:8px}
+  .cat-label{font-family:"IBM Plex Mono",monospace; font-size:.72rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--accent); padding-bottom:2px}
+
+  /* tables */
+  .scroll{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; background:var(--card)}
+  table{border-collapse:collapse; width:100%; font-size:.86rem; min-width:520px}
+  th,td{text-align:left; padding:9px 14px; border-bottom:1px solid var(--rule)}
+  th{font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.09em; text-transform:uppercase;
+     color:var(--ink-3); font-weight:500; background:var(--paper)}
+  tbody tr:last-child td{border-bottom:none}
+  td.num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .win{color:var(--verified); font-weight:600}
+  .bad{color:var(--brick)}
+
+  blockquote{
+    margin:0; padding:14px 18px; background:var(--card); border-left:2px solid var(--rule-2);
+    font-family:Newsreader,Georgia,serif; font-size:1.02rem; line-height:1.5; color:var(--ink);
+  }
+  blockquote cite{display:block; margin-top:8px; font-family:"IBM Plex Mono",monospace;
+    font-size:.7rem; font-style:normal; color:var(--ink-3); letter-spacing:.04em}
+  ul{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:8px; max-width:66ch}
+  li{font-size:.94rem; color:var(--ink-2)}
+  li strong{color:var(--ink)}
+  footer{border-top:1px solid var(--rule); padding-top:22px; font-size:.83rem; color:var(--ink-3); display:flex; flex-direction:column; gap:10px}
+  code{font-family:"IBM Plex Mono",monospace; font-size:.86em; background:var(--card); padding:1px 5px; border-radius:2px; border:1px solid var(--rule)}
+  @media (max-width:520px){ body{padding-block:36px 56px} .wrap{gap:40px} }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Research briefing · non-stock memory for Claude Code</div>
+  <h1>Agent Memory, Graded</h1>
+  <p class="lede">Eleven research agents across eight lanes. No product survived. A Google-published file format did, and the thing that was actually broken turned out to be reachability, not recall.</p>
+  <div class="dateline">
+    <span>Compiled 2026-09-10</span>
+    <span>Lanes: GitHub · Blogs · HN · Reddit · source · papers</span>
+    <span>Counts pulled live via <code>gh</code>; quotes re-fetched from source</span>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Bottom line</div><h2>What the evidence actually supports</h2></div>
+  <div class="verdict">
+    <p><strong>No third-party memory product in this survey has a verified multi-month success story with Claude Code.</strong> That absence was then attacked deliberately across five subreddits rather than defended, and it held. Every sustained-success report is a disciplined file workflow; the product stories are builders' own launch posts.</p>
+    <p><strong>mem0's supersession logic is dead code.</strong> Verified in source: the ADD/UPDATE/DELETE decision prompt exists and is called by nothing. What ships is ADD-only with exact-hash dedup, so contradictory facts coexist forever. See the autopsy below.</p>
+    <p><strong>The thing that works is a format, not a product.</strong> OKF is a real Google Cloud spec with six independent implementations in three months. It is markdown with YAML frontmatter, and it standardizes exactly the four things a memory corpus needs: provenance, trust, lifecycle, and attestation.</p>
+    <p>And the diagnosis shifted. The unsolved problem in the field is <strong>provenance and invalidation</strong>, which is a judgment problem no product solves. But on a corpus that is already hand-curated, that half is handled. The measured failure was <strong>reachability</strong>: 1% of what had been written ever reached a session.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Autopsy</div><h2>mem0: the feature is not wired up</h2></div>
+  <p class="prose">mem0 is the most-cited memory layer in the field, 65,075 stars and funded. Its documented behaviour is an LLM "smart memory manager" that emits ADD, UPDATE, DELETE or NOOP per fact. That prompt is real. <strong>It is also unreachable code.</strong> <span class="stamp s-v">Verified here</span></p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Claim</th><th>What the source says</th></tr></thead>
+    <tbody>
+      <tr><td><code>DEFAULT_UPDATE_MEMORY_PROMPT</code> drives updates</td><td class="bad">Referenced only in its own definition file and one unit test. <code>main.py</code> never imports it.</td></tr>
+      <tr><td>What actually runs</td><td><code>ADDITIVE_EXTRACTION_PROMPT</code>, whose own text reads <strong>"Your sole operation is ADD"</strong></td></tr>
+      <tr><td>Deduplication</td><td>Exact MD5 hash of the text. A rephrase or a contradiction does not collide.</td></tr>
+      <tr><td>Events emitted</td><td><code>"event": "ADD"</code> hardcoded at 9 sites. No UPDATE or DELETE in the add path.</td></tr>
+      <tr><td>Graph memory</td><td class="bad">Removed from OSS entirely. No <code>mem0/graphs/</code> directory. Paid Platform only.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="prose">Three open PRs from separate contributors diagnose this exact gap. One writes: <em>"even if the prompt returns UPDATE or DELETE events, the current add pipeline does not handle those events, so conflicting memories can remain in the vector store."</em> A purpose-built external auditor found mem0's judge consistently mislabels supersession as contradiction. And a production user, with no knowledge of any of it, quit for the same reason:</p>
+  <blockquote>I ran mem0 and supermemory as memory layer for claude code... when I changed something it'd keep the old version around instead of updating so I'd get both versions back at once.
+  <cite>r/AI_Agents 1wbor6k · 1 day old · <span class="stamp s-v">Quote verified verbatim</span></cite></blockquote>
+  <p class="prose"><strong>Four instruments agree</strong>: the source code, its own issue tracker, an independent audit tool, and a user's lived complaint. That is a complete causal chain, which is rare.</p>
+  <p class="prose">And prompt engineering cannot fix it. Per arXiv 2606.26511, cosine similarity separates a <em>contradicted</em> fact from a <em>duplicated</em> one at <strong>AUROC 0.59</strong>, near chance. The candidate set any such judge reasons over is selected by a signal structurally blind to supersession.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">The find</div><h2>OKF: the answer is a format</h2></div>
+  <p class="prose"><code>GoogleCloudPlatform/knowledge-catalog</code>, <strong>9,153 stars</strong>, Apache-2.0. <code>okf/SPEC.md</code> defines the Open Knowledge Format v0.2: a directory of <code>.md</code> files with YAML frontmatter. Its own summary: <em>"if you can <code>cat</code> a file, you can read OKF."</em> <span class="stamp s-v">Verified here</span></p>
+  <p class="prose">It standardizes the four things plain markdown lacks:</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Family</th><th>Field</th><th>What it buys</th></tr></thead>
+    <tbody>
+      <tr><td>Provenance</td><td><code>sources[]</code></td><td>author, usage_count, last_modified as credibility signals</td></tr>
+      <tr><td>Trust</td><td><code>generated</code> / <code>verified</code></td><td>Machine-written vs human-confirmed, via a <code>human:</code> actor prefix</td></tr>
+      <tr><td>Lifecycle</td><td><code>status</code>, <code>stale_after</code></td><td>draft/stable/deprecated, plus an absolute staleness instant</td></tr>
+      <tr><td>Attestation</td><td><code>type: Attested Computation</code></td><td>Deterministic, no-LLM proof a number was computed as claimed</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="prose">The supersession mechanism the whole field is circling is deliberately dumb, and that is the point:</p>
+  <blockquote>An absolute instant, not a relative TTL, keeps the staleness decision a plain comparison with no reference to when the concept was read.
+  <cite>okf/SPEC.md §5.5 · <span class="stamp s-v">Read from source</span></cite></blockquote>
+  <p class="prose">One design decision worth stealing regardless of adoption: the spec <strong>refuses to store a credibility score</strong>, because <em>"a score is subjective, unportable across consumers, and goes stale. Credibility is inferred from the signals."</em> A stored score is a derived record that decays where nothing checks it.</p>
+  <p class="prose">Six unrelated implementations in roughly three months: <code>okf-agent-memory</code> (549★), <code>okf-skills</code> (381★), <code>fellowgeek/mcp-memory</code> (211★), <code>serradura/okf</code> (155★), <code>kiso</code> (40★), plus a curated awesome-list. Formats with six independent implementations tend to outlive the products built on them.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Method</div><h2>How to read the grades</h2></div>
+  <p class="prose">Every claim below carries a provenance stamp. This is not decoration - provenance is the exact thing the field cannot solve, so a document about it should show its own.</p>
+  <div class="legend">
+    <div><span class="stamp s-v">Verified here</span> Re-checked in this session against the live source - a command run or a page fetched.</div>
+    <div><span class="stamp s-a">Agent-sourced</span> Reported by a research agent with a real URL and date, not independently re-checked.</div>
+    <div><span class="stamp s-c">Self-reported</span> The claimant benchmarked their own product, or discloses building one of the entrants.</div>
+    <div><span class="stamp s-u">Unverified</span> Could not be confirmed. Listed so it is visible, not so it can be relied on.</div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Category error</div><h2>These are four different products</h2></div>
+  <p class="prose">The most common mistake in the listicles is treating these as competing answers to one question. They answer four:</p>
+  <ul>
+    <li><strong>Conversation memory</strong> - what did we decide last session. claude-mem, MemSearch, MemPalace, Mem0.</li>
+    <li><strong>Code-structure memory</strong> - a parsed map of the codebase, not history at all. codebase-memory-mcp.</li>
+    <li><strong>Task-state memory</strong> - what work is open and what blocks it. Beads, explicitly not a knowledge store.</li>
+    <li><strong>General agent infrastructure</strong> - cross-application memory services that happen to speak MCP. Zep, Letta, Cognee, Graphiti.</li>
+  </ul>
+  <p class="prose">Only the first competes with a maintained markdown index. The other three solve problems a markdown index was never solving.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">The ledger</div><h2>Candidates, by architecture</h2></div>
+
+  <div class="cat">
+    <div class="cat-label">Local · zero external dependency</div>
+
+    <div class="entry">
+      <div class="entry-head"><span class="name">Official MCP memory server</span><span class="stamp s-v">Verified here</span></div>
+      <div class="facts">modelcontextprotocol/servers · 90,220★ monorepo · pushed 2026-09-03</div>
+      <p>A local JSON knowledge graph of entities, relations and observations. No embeddings, no database, no service. Recall happens only when the model explicitly calls a tool.</p>
+      <p class="verdict-line"><strong>Candidate because:</strong> it is the reference implementation every other knowledge-graph server forks, it is Anthropic-maintained, and it is auditable in an afternoon. <strong>Costs:</strong> string matching only - no semantic recall - and a single JSON file with no concurrency story.</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head"><span class="name">mcp-memory-service</span><span class="stamp s-v">Verified here</span></div>
+      <div class="facts">doobidoo/mcp-memory-service · 1,934★ · 312 forks · Apache-2.0 · pushed 2026-09-10</div>
+      <p>SQLite storage with <em>bundled local ONNX embeddings</em> - the only entrant here that does semantic search with no embedding provider behind it. Typed causal edges (causes / fixes / contradicts) and both MCP and REST transports.</p>
+      <p class="verdict-line"><strong>Candidate because:</strong> semantic recall with no cloud call and no API budget, and those typed edges are the closest thing in the survey to modelling supersession. <strong>Costs:</strong> smallest community of the serious options, so least battle-tested.</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head"><span class="name">basic-memory</span><span class="stamp s-v">Verified here</span></div>
+      <div class="facts">basicmachines-co/basic-memory · 3,922★ · AGPL-3.0 · pushed 2026-09-10</div>
+      <p>Plain Markdown files as the source of truth, with wikilinks and observations forming the graph. MCP-native.</p>
+      <p class="verdict-line"><strong>Candidate because:</strong> the store stays human-readable and hand-editable, which is the property that makes correcting a wrong memory possible at all. <strong>Costs:</strong> AGPL-3.0 is copyleft, and the README now leads with a paid cloud tier - the open repo functions partly as a funnel.</p>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="cat-label">Hook-based capture</div>
+    <div class="entry">
+      <div class="entry-head"><span class="name">claude-mem</span><span class="stamp s-v">Verified here</span><span class="stamp s-a">Behaviour agent-sourced</span></div>
+      <div class="facts">thedotmack/claude-mem · 93,636★ · 8,232 forks · Apache-2.0 · pushed 2026-09-10</div>
+      <p>Captures sessions through Claude Code lifecycle hooks into SQLite plus a Chroma vector store, compresses with an LLM, and reinjects on the next session.</p>
+      <p class="verdict-line"><strong>Candidate because:</strong> by far the most-starred project in the survey and the only one built specifically around Claude Code's hook system. <strong>Costs:</strong> an independent benchmarker reports it is <strong>a no-op out of the box - it only records forward from install</strong>, so an existing corpus is invisible to it. Heavy dependency stack (Bun, uv, SQLite, Chroma).</p>
+      <p class="verdict-line"><strong>Correction worth noting:</strong> its README now opens "Claude-Mem is now Grok Mem." This is a naming change, not an abandonment - the repo description lists Claude Code <em>first</em> among supported agents, topics still include <code>claude-code-plugin</code>, and it shipped today.</p>
+    </div>
+  </div>
+
+  <div class="cat">
+    <div class="cat-label">Infrastructure · graph and vector services</div>
+    <div class="entry">
+      <div class="entry-head"><span class="name">Mem0</span><span class="stamp s-v">Verified here</span></div>
+      <div class="facts">mem0ai/mem0 · 65,074★ · 7,618 forks · Apache-2.0 · pushed 2026-09-10</div>
+      <p>Hybrid vector store plus optional graph, with LLM fact-extraction per turn. Not MCP-native - Claude Code integration goes through a third-party shim, and the obvious one (<code>coleam00/mcp-mem0</code>, 684★) has been stale since 2025-04-13.</p>
+      <p class="verdict-line"><strong>Candidate because:</strong> the largest, best-funded, most cited memory layer. <strong>Costs:</strong> see the benchmark section - it is the specific system independent testing found worse than no memory at all.</p>
+    </div>
+    <div class="entry">
+      <div class="entry-head"><span class="name">Graphiti · Cognee · Letta · Zep</span><span class="stamp s-v">Counts verified</span></div>
+      <div class="facts">graphiti 30,772★ · cognee 30,629★ · letta 24,692★ · zep 4,905★ · all pushed within 2 days</div>
+      <p>Temporal and pipeline knowledge graphs backed by real databases. Graphiti's bi-temporal edge model is the most architecturally serious attempt at supersession in the survey; it needs Neo4j or FalkorDB running.</p>
+      <p class="verdict-line"><strong>Candidate because:</strong> these are the only systems that model <em>time</em> - that a fact was true and later stopped being true. <strong>Costs:</strong> heaviest operational footprint here, and built for cross-application agent fleets rather than one developer's project notes.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Evidence</div><h2>The six-way benchmark</h2></div>
+  <p class="prose">The most relevant measurement found anywhere: 19,000 LongMemEval sessions laid out in <em>real <code>~/.claude</code> and <code>~/.codex</code> directory layouts</em>, 100 questions whose answer sits in exactly one session. Posted to Hacker News 2026-09-05. The author discloses building one of the six.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>System</th><th>Index</th><th>Query</th><th>hit@1</th><th>found@50</th></tr></thead>
+    <tbody>
+      <tr><td>deja <span style="color:var(--ink-3)">- BM25, no vectors</span></td><td class="num">29s</td><td class="num">24ms</td><td class="num win">18/100</td><td class="num">67</td></tr>
+      <tr><td>agentmemory</td><td class="num">95s</td><td class="num">-</td><td class="num">14</td><td class="num">65</td></tr>
+      <tr><td>MemPalace</td><td class="num">~3h</td><td class="num">2.6s</td><td class="num">14</td><td class="num">-</td></tr>
+      <tr><td>CASS</td><td class="num">56m</td><td class="num bad">query fuel exhausted</td><td class="num bad">-</td><td class="num">-</td></tr>
+      <tr><td>claude-mem</td><td class="num bad">no-op out of the box</td><td class="num">-</td><td class="num bad">-</td><td class="num">-</td></tr>
+      <tr><td>funes</td><td class="num bad">189 of 19k</td><td class="num">-</td><td class="num bad">0/100</td><td class="num">-</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <blockquote>BM25 basically ties embeddings here at 1/100th the cost. The real cliff is reranking (found@50 67 vs hit@5 35) and staleness. Vector search has zero concept of “superseded info”.
+  <cite>u/vshulcz · Hacker News 49581240 · 2026-09-05 · 80 pts / 32 comments · <span class="stamp s-c">Discloses building one entrant</span></cite></blockquote>
+  <p class="prose">Independently corroborated. A second practitioner, evaluating whether to keep semantic search in his own tool, measured on three months of his own sessions and then removed it:</p>
+  <blockquote>BM25 search was finding the correct answer in ~61%, where semantic had shown only ~37% of success. After that it was easy for me to make the decision.
+  <cite>u/opwizardx · same thread · methodology published · <span class="stamp s-a">Agent-sourced, quote verified</span></cite></blockquote>
+  <p class="prose">Low absolute numbers are a property of the 19k-session corpus; the same BM25 scores about 85% hit@1 on standard 500-session LongMemEval-S.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Evidence</div><h2>The cost benchmark, with its caveats</h2></div>
+  <p class="prose">A 2025 independent test on MemBench compared memory layers against simply passing the full conversation history. The author sells no competing product.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Approach</th><th>Cost</th><th>Multiple</th><th>Precision</th></tr></thead>
+    <tbody>
+      <tr><td>Full conversation history</td><td class="num">$1.98</td><td class="num">1×</td><td class="num win">84.6%</td></tr>
+      <tr><td>Mem0</td><td class="num">$24.88</td><td class="num bad">12.6×</td><td class="num bad">49.3%</td></tr>
+      <tr><td>Zep <span style="color:var(--ink-3)">- partial run</span></td><td class="num">$152.60</td><td class="num bad">~77×</td><td class="num bad">51.6%</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="prose"><span class="stamp s-v">Verified here</span> &nbsp;Two caveats that matter and are usually dropped when this result is cited: the <strong>Zep run completed only 1,730 of 4,000 cases before being aborted on cost alerts</strong>, so its 77× is an incomplete measurement; and the post is dated <strong>2025-11-21</strong>, making it roughly ten months old - old enough that both products have shipped since.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Mechanism</div><h2>Why these fail in practice</h2></div>
+  <p class="prose">The most useful single finding is not a benchmark. A developer tried Mem0, agentmemory and Claude Mem before building his own layer, and reported the failure was never retrieval quality:</p>
+  <blockquote>They could store sessions, extract useful facts, and return good results when I searched manually. But the coding agent never chose to search the memories stored in those systems. The memory was there, but it never made it into the work.
+  <cite>u/DreadlockEug · r/ClaudeAI 1vxhdk1 · 17 days ago · <span class="stamp s-v">Quote verified verbatim</span></cite></blockquote>
+  <p class="prose">His fix was to stop relying on discretionary recall and inject unconditionally at chosen moments, reporting 64% → 79% on SWE-bench-CL <span class="stamp s-c">Self-reported</span>. The sharpest reply names the cost of that fix:</p>
+  <blockquote>Proactive recall makes stale knowledge more dangerous, not less.
+  <cite>Reply in the same thread · <span class="stamp s-v">Quote verified verbatim</span></cite></blockquote>
+  <p class="prose">This is the same conclusion the Hacker News thread reaches from the other direction - that retrieval is largely solved and maintenance is not:</p>
+  <blockquote>Precision/recall is relatively “solved”. What nobody has gotten close to solving is maintenance and provenance - what goes into memory, what qualifies as truth, how stale memory gets invalidated/superseded. We’re now in the phase of re-discovering 30+ years of pain of knowledgebases.
+  <cite>u/glub · HN 49581240 · 2026-09-05 · <span class="stamp s-v">Quote verified verbatim</span></cite></blockquote>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Lived experience</div><h2>What people who tried them say</h2></div>
+  <p class="prose">Reddit was reachable only through a stealth scraper - it returns 403 to normal fetching. Every item below comes from a directly fetched thread. <span class="stamp s-a">Agent-sourced</span></p>
+  <ul>
+    <li><strong>Shared cross-project knowledge graph:</strong> proposed 3 days ago; the thread's own summary records <em>"the community vote is a hard no"</em> - it "will just add noise to every prompt." Replies route durable knowledge to versioned repo files and reserve memory for trivial preferences.</li>
+    <li><strong>Adopt-then-drop, four months in:</strong> <em>"I paid for Obsidian Sync and barely used it, waste of money… I do not need the graph."</em> Replaced with CLAUDE.md plus folders and a weekly audit skill that dedupes and archives stale notes.</li>
+    <li><strong>A vendor talking a user out of it:</strong> in a 31-comment thread, the maker of a commercial memory plugin wrote <em>"if Claude's built-in memory and your handoff file already cover what you need, I wouldn't add another subscription just for the sake of having a memory layer."</em></li>
+    <li><strong>Memory actively harming output:</strong> an audit of built-in auto-memory after long use found <em>"a mess of rule accretion, misunderstandings, and overstatements. Old instructions remained alongside corrections."</em> Another commenter's auditor found 40+ stale entries and six memories describing the same thing six different ways.</li>
+  </ul>
+  <p class="prose">No thread in the survey contained a multi-month satisfied-user report for a named third-party memory product. The sustained-success stories were all file discipline.</p>
+
+  <div class="entry" style="border-top:2px solid var(--rule-2); margin-top:6px">
+    <div class="entry-head"><span class="name">That absence was then stress-tested</span><span class="stamp s-a">Agent-sourced</span></div>
+    <p>An absence is only as strong as the search behind it, so the lane was re-run with the opposite goal: find the person whose experience <em>breaks</em> this conclusion. Five subreddits - r/ClaudeAI, r/ClaudeCode, r/mcp, r/LocalLLaMA, r/AI_Agents - searched for sustained use rather than launches. <strong>No independent 3+ month satisfied user of any named product surfaced.</strong> r/mcp proved to be builders talking to other builders; the one apparently promising "six months" post was an unrelated Android agent. Not searched: r/ChatGPTCoding, r/Anthropic - stated as a real gap rather than folded into the absence.</p>
+    <p>The strongest single data point runs the same direction, from someone with every reason to adopt one:</p>
+    <blockquote>After spending a year building an agent harness and demoing a few memory options I am committing to QMD and markdown for my platform today.
+    <cite>u/liltechnomancer · r/AI_Agents 1vrc6u1 · 51 votes / 54 comments</cite></blockquote>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">The exception</div><h2>Where files genuinely lose</h2></div>
+  <p class="prose">One credible counter-case emerged, and it is specific rather than general. A developer who built his own hosted note server describes the boundary plainly - and then argues against his own product for everyone on the other side of it:</p>
+  <blockquote>I use Claude Code on my desktop, Claude on my phone, and ChatGPT for a few things. A grep-able EXPERIMENTS.md solves none of that. I was either syncing a repo around or re-explaining the same context depending on which client I opened.
+  <cite>u/tehmadnezz · r/AI_Agents 1vrc6u1 · 24 days ago</cite></blockquote>
+  <blockquote>If you work in one terminal on one machine, a markdown file plus grep is genuinely better and free, and I would not try to talk you out of it.
+  <cite>Same author, same thread · <span class="stamp s-a">A builder arguing against his own product</span></cite></blockquote>
+  <p class="prose">This sharpens the finding rather than reversing it. Files win for the <strong>single-machine, single-harness</strong> case. The real failure boundary is <strong>cross-device and cross-client continuity</strong> - and note that Claude Code's own auto memory is documented as machine-local, never synced across machines. Even at that boundary, the fix practitioners reach for tends to be self-built rather than an existing product.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Recommendation</div><h2>What this means for a maintained markdown index</h2></div>
+  <div class="prose">
+    <p>Measured against the stock system's real failure modes - a silent 200-line / 25KB load cut, a fixed index budget against a growing corpus, and hooks abbreviated past the point of usefulness - the honest reading is that <strong>none of these fix the problems you actually have, and several would add new ones.</strong></p>
+    <p>The one capability worth wanting is <strong>query-time retrieval</strong>: pulling a relevant memory mid-task instead of loading everything up front. The evidence says buy that with <strong>BM25 or SQLite FTS over the markdown you already have</strong> - lexical beat semantic in both independent tests, at a hundredth of the cost, over files that stay hand-editable.</p>
+    <p>The thing every product in this survey fails at - deciding what is still true and retiring what is not - is already handled here by hand, by rewriting superseded memories in place rather than appending corrections. That is the unsolved problem, and it is solved by judgment, not by a vector store.</p>
+    <p>The one condition that would change this answer is <strong>working across machines or clients</strong>. That is the single boundary where a file-based index was credibly reported to fail. On one machine with one harness, it is the stronger option.</p>
+  </div>
+
+  <div class="entry" style="border-top:2px solid var(--rule-2)">
+    <div class="entry-head"><span class="name">The scale of the actual problem</span><span class="stamp s-v">Verified here</span></div>
+    <div class="facts">2,459,204 bytes on disk · 24,012 bytes reach a session · 553 memory files</div>
+    <p>Measured on a real corpus: <strong>1% of what has been written is loaded</strong>. The other 99% is present, correct, indexed - and never offered. The reported failure of the products in this survey was that agents did not <em>choose</em> to search available memory. The failure of a truncated index is more basic: there is nothing to choose from.</p>
+    <p class="verdict-line">This is what makes query-time retrieval the one capability worth adding, and why the hook that receives the prompt text is the one that matters. Lexical search over files already on disk buys it without putting a service in the recall path.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Built</div><h2>What the research actually produced</h2></div>
+  <p class="prose">Not an adoption. A retrieval layer, roughly 200 lines of Python stdlib, against the files that were already there. <span class="stamp s-v">Verified here</span></p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Decision</th><th>Because</th></tr></thead>
+    <tbody>
+      <tr><td>Lexical FTS5, not embeddings</td><td>fts 61% vs vector 37% in a blinded A/B over 1,126 real calls; BM25 ties embeddings at 1/100th the cost; AUROC 0.59 on the one distinction that matters</td></tr>
+      <tr><td>Files stay authoritative</td><td>The index is derived and disposable. Delete it, it rebuilds. No memory file is ever written by the hook.</td></tr>
+      <tr><td><code>UserPromptSubmit</code>, not session start</td><td>It receives the prompt text, so retrieval is keyed to the actual question. Session start is already covered by stock auto-memory.</td></tr>
+      <tr><td>Coverage gate, not a score floor</td><td>An absolute BM25 floor failed its negative control: "weather in tokyo today" returned 6 memories matching on <code>today</code> alone. Requiring 2 distinct query terms fixed it.</td></tr>
+      <tr><td>Always exit 0</td><td><code>UserPromptSubmit</code> exit code 2 blocks and <strong>erases the user's prompt</strong>. A traceback must degrade to "no memories", never eat a turn.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="prose">Measured: <strong>5 to 15ms warm</strong>, 553 files, 4MB index. Nine verification cases including two negative controls and an adversarial FTS5-metacharacter prompt.</p>
+
+  <div class="entry" style="border-top:2px solid var(--rule-2)">
+    <div class="entry-head"><span class="name">The first real firing found a rule being broken</span><span class="stamp s-v">Verified here</span></div>
+    <p>On its first live prompt the hook surfaced a PHIL-LOCKED standing rule: <strong>never use em-dashes.</strong> It had been violated continuously all session, including throughout the first version of this page, which contained 44 of them.</p>
+    <p>That rule lives in the full index only, never in the 24KB that loads. The only way to have found it was to decide, unprompted, to grep 553 files for a rule whose existence was unknown. An audit then showed 24 standing-rule memories, <strong>21 reachable and 3 invisible</strong> - and the invisible one governed every sentence written.</p>
+    <p class="verdict-line">This is the whole argument in one event. The memory was correctly written, correctly indexed, and unreachable. No product in this survey addresses that; a lexical index over files already on disk does.</p>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Corrections applied during compilation.</strong> Three agent findings did not survive verification: claude-mem was reported as having pivoted away from Claude Code (it is a rename; the repo still targets Claude Code first); its star count was flagged as contradictory (93,636 confirmed via API); and the cost-benchmark figures were reported as "14-77× and 31-33%" when the source says 12.6× and 77×, with absolute precision drops of 33-35 points and Zep's run incomplete. One agent found Reddit structurally unreachable and correctly reported a gap rather than filling it.</p>
+  <p><strong>One claim was attacked rather than defended.</strong> The finding that no sustained-success case exists rested on an absence, so the Reddit lane was re-run with the explicit goal of falsifying it across five subreddits. It survived - and produced the cross-device exception above, which narrowed the conclusion instead of confirming it. A promotional thread claiming +43.1% accuracy for hosted memory tools was discarded as vendor cross-marketing with no visible methodology, despite being the most flattering evidence found for the category.</p>
+  <p>Star counts, fork counts, licenses and push dates pulled live via <code>gh</code> on 2026-09-10. Quotes marked verified were re-fetched from source in-session. Nothing on this page is reported from training data.</p>
+</footer>
+
+</div>

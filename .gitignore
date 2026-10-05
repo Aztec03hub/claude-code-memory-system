@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+
+# Local only. `private/` holds a full settings.json snapshot and old eval backups: machine
+# detail and unrelated personal tooling that nothing here needs in order to be read.
+private/
+
+# The curation list is one user's standing rules and live projects, and some slugs name real
+# people and clients. loaded-tier.config.example.json is the committed shape.
+src/loaded-tier.config.json
+
+# Never: the key itself, and anything the running system derives.
+*.key
+.gemini-key
+.index/

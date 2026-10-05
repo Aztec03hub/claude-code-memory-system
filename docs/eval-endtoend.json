@@ -1,0 +1,162 @@
+[
+ {
+  "target": "Tooling/harness organization + test-before-claim + document-or-discard",
+  "q": "What\u2019s the checklist I need to follow before I can tell Phil a new script or tool I wrote is actually finished?"
+ },
+ {
+  "target": "adr_supersedes_standard_drift_needs_a_ticket",
+  "q": "How do I handle it when my code doesn't follow our established standards?"
+ },
+ {
+  "target": "a_corrected_procedure_does_not_reach_existing_instances",
+  "q": "Why are my old files still failing even after I updated the script to fix the bug?"
+ },
+ {
+  "target": "suggestive_priming_beats_prescriptive_procedure",
+  "q": "Should I give the AI a step-by-step guide on how to solve this, or is it better to just point out the specific things it needs to keep in mind while working?"
+ },
+ {
+  "target": "feedback_single_agent_ab_review",
+  "q": "Should I set up two separate AI agents to review my code for bugs and architectural issues, or is it better to just have one agent check for both at the same time?"
+ },
+ {
+  "target": "parallel_reviewers_on_one_checkout_void_each_others_work",
+  "q": "How can I stop my AI reviewers from getting confused or seeing the wrong code when I'm switching branches in the same folder?"
+ },
+ {
+  "target": "log-everything-by-default",
+  "q": "Is it okay to just ignore these errors if I know they aren't actually breaking my main app features?"
+ },
+ {
+  "target": "comms_polling_and_presence",
+  "q": "Why do my sub-agents keep going silent or missing messages instead of just talking to the external partner directly?"
+ },
+ {
+  "target": "Flux Fill outpainting definitive workflow (Apr 2026)",
+  "q": "How do I set up a Flux outpainting workflow that expands the image in small chunks without getting weird color shifts or visible seams?"
+ },
+ {
+  "target": "android-13-plus-fingerprint-spoofing",
+  "q": "Why does my Play Integrity bypass stop working when I use the latest device fingerprints on Android 13?"
+ },
+ {
+  "target": "a-contract-checker-counts-who-opted-in-not-who-depends",
+  "q": "Why is my log checker only seeing one probe when I know for a fact I have two set up?"
+ },
+ {
+  "target": "project_natively_speculative_embedding",
+  "q": "How can I stop the 1.5-second delay caused by the Gemini embedding call every time a user asks a question?"
+ },
+ {
+  "target": "assert-on-the-negative-space-not-just-that-the-wanted-thing-happened",
+  "q": "Why are my tests passing even though the feature is actually broken?"
+ },
+ {
+  "target": "feedback_and_or_prints_the_else_branch_when_the_middle_command_fails",
+  "q": "Why does my script keep printing \"DONE\" even when the process is still running?"
+ },
+ {
+  "target": "v7 training run results and checkpoint testing",
+  "q": "How do I figure out which of these changes actually fixed the brightness issue in my latest LoRA run?"
+ },
+ {
+  "target": "a-threshold-needs-the-population-it-is-measured-against",
+  "q": "Why did my decision bar trigger on the wrong group of data even though I set the criteria correctly?"
+ },
+ {
+  "target": "a-correct-probe-whose-sample-cannot-contain-the-phenomenon",
+  "q": "Why is my reproduction script passing even though the production bug is still happening?"
+ },
+ {
+  "target": "a-written-measurement-does-not-intercept-a-plan",
+  "q": "How do I handle it when I realize I\u2019ve wasted time planning a feature that someone else already documented as broken in the source code?"
+ },
+ {
+  "target": "Claude Comms research findings",
+  "q": "How do I set up an MCP server so it can handle multiple clients without breaking the connection?"
+ },
+ {
+  "target": "Plan-amendment agents MUST verify against source before writing pseudocode",
+  "q": "Why does the code keep breaking after I update the plan based on feedback, even though the plan itself looks like it should work?"
+ },
+ {
+  "target": "cleanup-code-is-a-claim-about-how-the-parent-dies",
+  "q": "Why does my subprocess keep running even after I put a `proc.kill()` inside a `finally` block?"
+ },
+ {
+  "target": "presence_is_not_validation_and_the_disclosure_missed_the_case",
+  "q": "Why is my tool still accepting empty or wrong data types even though I added validation for missing arguments?"
+ },
+ {
+  "target": "a_unit_convention_fakes_a_disagreement",
+  "q": "Why do my file size numbers keep changing depending on which tool I use to check them?"
+ },
+ {
+  "target": "Challenge conservative medical literature",
+  "q": "Why are the volume limits in the medical papers so much lower than what surgeons are actually doing in the real world?"
+ },
+ {
+  "target": "feedback_gold_standard_dev_workflow",
+  "q": "How should I structure my development process to make sure I\u2019m handling design, reviews, and implementation efficiently while keeping the final verification under my control?"
+ },
+ {
+  "target": "git_diff_is_not_what_a_merge_will_do",
+  "q": "Why does `git diff` show a bunch of deletions when I merge, even though my branch didn't actually change those files?"
+ },
+ {
+  "target": "project_aletheia_orchestration",
+  "q": "How do I manage the file handoffs between agents so they don't overwrite each other's work while building out the next wave of the project?"
+ },
+ {
+  "target": "a_hand_assembled_gate_list_selects_for_the_checker_nobody_thought_of",
+  "q": "How can I make sure I'm running all the necessary tests before I push, instead of just guessing which ones to run manually?"
+ },
+ {
+  "target": "local-ollama-low-concurrency-cap",
+  "q": "Why does my local Ollama instance keep freezing up and hanging during test runs?"
+ },
+ {
+  "target": "a-brief-that-forbids-the-thing-in-question-destroys-the-evidence-for-it",
+  "q": "Why did my sub-agent stop trying to send messages after I told it not to use that function?"
+ },
+ {
+  "target": "feedback_orchestrator_posts_as_self_not_phil",
+  "q": "Why are my messages in the channel showing up as Phil instead of the orchestrator account?"
+ },
+ {
+  "target": "feedback_briefs_maximally_explicit_full_compliance",
+  "q": "How can I make sure my AI agents actually follow every single step in my prompt without skipping anything?"
+ },
+ {
+  "target": "github-needs-outputs-empty-string-fails-open",
+  "q": "Why does my GitHub Actions workflow keep running even when the previous job failed or was skipped?"
+ },
+ {
+  "target": "feedback_recoverability_is_specified_design_not_optional",
+  "q": "How do I fix this edge-repointing logic so that the state isn't permanently broken if the deduplication process fails?"
+ },
+ {
+  "target": "task_list_is_the_dispatch_record_for_all_work",
+  "q": "How do I properly hand off a task to an agent so they actually see what they're supposed to do and start working on it?"
+ },
+ {
+  "target": "the_pr_description_is_the_first_comment",
+  "q": "How can I see the text in the PR description using the GitHub API or CLI, since it\u2019s not showing up when I pull the comments?"
+ },
+ {
+  "target": "nobody_audits_a_header",
+  "q": "How can I get reviewers to actually pay attention to my quality control process instead of just skimming the data?"
+ },
+ {
+  "target": "feedback_brief_phil_before_pushing_so_he_can_watch_it_land",
+  "q": "How should I handle my updates so Phil can actually see and check my work after I push?"
+ },
+ {
+  "target": "publish_then_invite_attack_beats_getting_it_right_first",
+  "q": "How can I get my team to actually give me useful feedback on a draft before I spend too much time polishing it?"
+ },
+ {
+  "target": "WordPress REST API for extracting all images from a post",
+  "q": "How can I grab all the images from a specific WordPress post without having to scrape the page or deal with lazy loading?"
+ }
+]

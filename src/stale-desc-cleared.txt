@@ -1,0 +1,36 @@
+# Candidates of find-stale-descriptions.py that were OPENED, READ and judged NOT defects.
+#
+# The script's precision is about 1 in 4, so most of what it reports is noise. Without this
+# file every run re-reports the same 19 files and the count can never reach zero, which makes
+# it useless as a regression metric and trains the next reader to skim past it - the exact
+# wallpaper failure the organ-health signal was built to avoid one level up.
+#
+# Format: filename (no .md), then a reason. Add a line ONLY after opening the file.
+# To re-audit one, delete its line. A file whose BODY changes should be re-audited, so this
+# is a record of a judgement at a point in time, not a permanent exemption.
+#
+# Audited 2026-10-05. The three recurring reasons, all measured on these 19:
+#   SUB      the marker refutes a sub-hypothesis, not the headline claim
+#   OTHER    the marker refutes ANOTHER memory's claim, cited here for context
+#   CONFIRMS the marker agrees with the description rather than reversing it
+#   ALREADY  the description already warns the reader in its own words
+
+reference_constellation_sync_schema_and_android_client_headers      SUB: refutes the two Ljdux; enums as the missing piece; the recovered schema stands
+reference_constellation_denies_writes_allows_reads_consent_never_granted  SUB: refines the block to DEVICE not MSISDN; read/write asymmetry stands
+reference_rcs_config_transplant_works_tachyon_registration_is_the_gate  OTHER: refutes "dropping Droid-Guard gives 200" from a different memory
+reference_the_sip_403_register_captured_in_full                     SUB: the invalid IMEI check digit is a FURTHER finding, not a reversal
+reference_version0_config_is_a_server_side_rcs_disable_not_a_microg_bug  SUB: refutes candidate cause #1 (number held elsewhere); headline stands
+reference_REFUTED_blocking_the_dumps_does_not_shrink_the_droidguard_blob  ALREADY: the filename and description both lead with REFUTED
+reference_aletheia_pack_budget_arithmetic                           SUB: retracts a corpus-labelling bug of mine; the pack arithmetic stands
+reference_verizon_grants_carrier_privileges_to_no_google_package     CONFIRMS: body says has-carrier-privileges=false is CORRECT and EXPECTED
+reference_dgprops_hook_works_and_google_still_denies                OTHER: refutes "IMSI provisioning must go over the mobile bearer"
+reference_evolv_needs_phil_doc                                      SUB: marker is about an individual NEEDS-PHIL item, not the doc's rule
+reference_the_stuck_future_is_h_the_etouffee_prekey_decorator        CONFIRMS: refutes the RIVAL suspects (FCM token, service-457), supporting this one
+reference_constellation_sync_rpc_is_sent_with_an_empty_auth_context  SUB: "what this run also REFUTED" lists other hypotheses
+reference_getconsent_works_from_microg_sync_is_invalid_argument      SUB: one OAuth scope refuted, three confirmed; headline stands
+reference_pixel5_bootloop_2026_09_18_recovery_facts                 OTHER: refutes FAKE_PACKAGE_SIGNATURE being allowlist-gated
+reference_the_droidguard_header_is_flag_gated_cslib_enable_provisioning_droid_guard_v2  SUB: the state NAME is not a valid tell; the flag gating stands
+reference_microg_droidguard_blob_structural_diff                    ALREADY: description says "CORRECTED after a strict re-parse"
+reference_wireless_debugging_recipe_and_the_acs_400_reproduces_with_matched_arms  OTHER: refers to the withholding hypothesis in another memory
+feedback_setting_task_owner_dispatches_a_brief_stripped_of_its_guardrails  ALREADY: description says the "setting owner causes it" mechanism was DISPROVED
+reference_lg_ncg_is_fully_broken_and_the_firmware_is_public          SUB: retracts the "launch gate" as a gate; the protocol break stands, and the retraction is already at the TOP of the body

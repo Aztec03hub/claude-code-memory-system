@@ -1,0 +1,33 @@
+# REJECTED 2026-10-05. Kept as the record of a measured negative, not as a candidate.
+#
+# Hypothesis, derived from reading the HARDv2 misses: the reranker under-selects TERSE
+# memories because a one-line description looks less informative beside a rich one. Several
+# misses were short direct questions whose target was a small memory
+# (feedback_safe_process_termination, feedback_review_round_before_every_push), which also
+# fits the finding that 75 memories are unretrievable because of their size.
+#
+# RESULT, A/B through production search():
+#     general  +0.0pp  (82.5% -> 82.5%)
+#     HARDv2   +0.0pp  (80.0% -> 80.0%)   <- the trustworthy set, n=60
+#     HARDv1   -3.8pp  (92.3% -> 88.5%)   <- exactly ONE case on a decayed n=26 set
+#
+# A clean no-op. Not shipped.
+#
+# AND THE RUN ESTABLISHED THE NOISE FLOOR, which is the more useful output. The BASELINE
+# itself moved one case on every set between two invocations, after only 2-3 memories were
+# added to the corpus:  general 85.0->82.5, HARDv1 88.5->92.3, HARDv2 78.3->80.0. Each of
+# those deltas is exactly 1/n. So at n=60 nothing below ~1.7pp is measurable, and a prompt
+# change must clear that bar to be believed. 557 eligible cases exist; build-rerank-eval.py
+# caps at 60 for a 2-minute loop. A serious tuning attempt needs --cap raised, not more
+# prompt ideas.
+#
+Pick the memories that would genuinely help answer this developer's message.
+
+MESSAGE: %s
+
+CANDIDATES:
+%s
+
+Three traps. A memory that states a general principle about the same area is worth less than one about the SPECIFIC mechanism the message names. Do not match on one salient word: decide what the developer is actually doing, then pick for that. And DO NOT PENALISE A SHORT ENTRY - a one-line memory that answers the message exactly beats a long one that is merely adjacent to it, so judge the FIT of what the entry says, never how much it says.
+
+Return ONLY a JSON array of at most %d indices, most useful first. Judge by whether the memory would CHANGE the answer, not by topical overlap. Return [] if none would. Include any memory that plausibly bears on the message - a missed relevant memory costs more than an extra one.

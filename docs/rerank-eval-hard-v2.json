@@ -1,0 +1,302 @@
+[
+ {
+  "q": "How do I handle adding new optional parameters?",
+  "target": "feedback_positional_optional_param_audit",
+  "rank": 4
+ },
+ {
+  "q": "Is there a specific email for work-related correspondence for Phil?",
+  "target": "reference_phil_work_email",
+  "rank": 4
+ },
+ {
+  "q": "Why am I getting false positives in my test sweep?",
+  "target": "feedback_a_sweep_that_collapses_three_outcomes_manufactures_its_own_hits",
+  "rank": 4
+ },
+ {
+  "q": "My results look good but I feel like I'm cherry-picking the success criteria.",
+  "target": "feedback_i_grade_a_measurement_from_the_conclusion_not_the_run_record",
+  "rank": 4
+ },
+ {
+  "q": "How do I handle conflicting definitions in a long design doc?",
+  "target": "feedback_large_spec_internal_inconsistency",
+  "rank": 4
+ },
+ {
+  "q": "Can I pull the DroidGuard VM files off a phone without root?",
+  "target": "reference_the_droidguard_vm_is_extractable_rootless_and_only_two_props_are_dirty",
+  "rank": 4
+ },
+ {
+  "q": "Why are my file:line citations broken after a documentation update?",
+  "target": "feedback_a_fix_invalidates_the_citations_that_prompted_it",
+  "rank": 5
+ },
+ {
+  "q": "Why am I getting PERMISSION_DENIED during Tachyon registration?",
+  "target": "project_rcs_is_PROVISIONED_but_tachyon_is_NOT_registered",
+  "rank": 5
+ },
+ {
+  "q": "Why does my search tool flag the remediation as an error?",
+  "target": "feedback_grep_is_the_wrong_instrument_on_a_doc_that_discusses_the_thing",
+  "rank": 5
+ },
+ {
+  "q": "How do I get RCS working on a de-googled CalyxOS phone?",
+  "target": "reference_SOLVED_rcs_connected_on_rootless_calyxos_with_patched_bugle",
+  "rank": 6
+ },
+ {
+  "q": "I'm seeing weird numbers in my report, how do I fix my data?",
+  "target": "feedback_i_fabricate_specific_numbers_when_conflating_subsystems",
+  "rank": 7
+ },
+ {
+  "q": "I keep misidentifying duplicates when only looking at the short text.",
+  "target": "feedback_a_duplicate_verdict_read_off_descriptions_was_wrong_22_times_out_of_22",
+  "rank": 9
+ },
+ {
+  "q": "Why does my code think the feature is missing?",
+  "target": "feedback_a_probe_field_read_at_the_wrong_type_reads_as_absence",
+  "rank": 10
+ },
+ {
+  "q": "How do I sync my ADR with the current codebase?",
+  "target": "feedback_a_decision_document_must_be_checked_against_the_code_before_it_is_applied",
+  "rank": 11
+ },
+ {
+  "q": "How should I update the design documentation?",
+  "target": "feedback_fix_the_prose_do_not_append_to_it",
+  "rank": 13
+ },
+ {
+  "q": "What is the process for updating the NEEDS-PHIL register?",
+  "target": "reference_evolv_needs_phil_doc",
+  "rank": 14
+ },
+ {
+  "q": "Why should I be worried about a false positive?",
+  "target": "feedback_a_false_fail_is_more_dangerous_than_a_false_pass",
+  "rank": 14
+ },
+ {
+  "q": "How are Bugle flag names constructed?",
+  "target": "reference_bugle_phenotype_flag_names_are_reader_class_prefix_plus_bare_name",
+  "rank": 14
+ },
+ {
+  "q": "Why are my nodes invisible to search queries?",
+  "target": "project_abstractnode_retrieval_invisible_decision1",
+  "rank": 15
+ },
+ {
+  "q": "Where did my commits go after I switched branches?",
+  "target": "feedback_work_committed_on_a_detached_head_belongs_to_no_branch",
+  "rank": 17
+ },
+ {
+  "q": "How do I avoid making the developer re-derive my findings?",
+  "target": "feedback_every_review_finding_ships_with_a_suggested_fix",
+  "rank": 17
+ },
+ {
+  "q": "Why does the Droid-Guard header fail to trigger in microG?",
+  "target": "reference_lganl_X_is_bugle_internal_and_the_acs_token_may_skip_the_OTP_request",
+  "rank": 17
+ },
+ {
+  "q": "How can I check real-world usage stats for my code?",
+  "target": "feedback_the_production_log_says_which_feature_is_actually_used",
+  "rank": 17
+ },
+ {
+  "q": "How do I stop my review rounds from getting stuck on the same issues?",
+  "target": "feedback_one_undirected_instruction_per_round_finds_what_the_shape_list_steers_away_from",
+  "rank": 19
+ },
+ {
+  "q": "Why did my analysis fail after using the reviewer's numbers?",
+  "target": "feedback_i_audit_a_reviewers_findings_and_adopt_its_arithmetic_unchecked",
+  "rank": 20
+ },
+ {
+  "q": "Can I restart an agent after I've stopped it?",
+  "target": "feedback_orchestrator_must_explicitly_close_finished_agents",
+  "rank": 21
+ },
+ {
+  "q": "My git commands are executing in the wrong folder.",
+  "target": "feedback_bash_cwd_resets_so_git_add_all_can_hit_the_wrong_repo",
+  "rank": 21
+ },
+ {
+  "q": "how do I stop a background process safely",
+  "target": "feedback_safe_process_termination",
+  "rank": 23
+ },
+ {
+  "q": "I am about to push my changes, what is the mandatory step?",
+  "target": "feedback_review_round_before_every_push",
+  "rank": 23
+ },
+ {
+  "q": "Why are my merges being blocked until approval?",
+  "target": "project_review_gated_deployment_strategy",
+  "rank": 24
+ },
+ {
+  "q": "Fixing mismatched Build fields in Play Integrity Fix",
+  "target": "reference_sdk_int_was_unspoofed_inside_droidguard",
+  "rank": 25
+ },
+ {
+  "q": "Why does my new implementation do nothing?",
+  "target": "feedback_a_second_channel_inherits_none_of_the_firsts_accidental_side_effects",
+  "rank": 25
+ },
+ {
+  "q": "Why does my search result still show outdated information?",
+  "target": "feedback_the_description_is_the_recall_surface_so_a_corrected_body_still_ships_the_wrong_claim",
+  "rank": 26
+ },
+ {
+  "q": "Why is my DroidGuard request being rejected?",
+  "target": "reference_microg_droidguard_program_request_defects",
+  "rank": 26
+ },
+ {
+  "q": "Why are my screenshots losing their original formatting and colors?",
+  "target": "feedback_winshot_token_savings_must_keep_colours_layout_and_the_image",
+  "rank": 26
+ },
+ {
+  "q": "I can't find the cause of these silent failures.",
+  "target": "feedback_log_everything_by_default",
+  "rank": 26
+ },
+ {
+  "q": "What is the technical requirement for the SM-DP+ address and matching ID?",
+  "target": "reference_visible_esim_install_flow_re",
+  "rank": 30
+ },
+ {
+  "q": "I missed an ACS-400 error in the terminal, how can I make logs easier to read?",
+  "target": "feedback_always_pipe_logcat_through_logfilter",
+  "rank": 30
+ },
+ {
+  "q": "How do I debug RCS provisioning failures?",
+  "target": "reference_pixel5_ground_truth_rcs_provisioning_success",
+  "rank": 31
+ },
+ {
+  "q": "What is the process for updating repeated findings after a fix?",
+  "target": "feedback_retraction_has_a_blast_radius",
+  "rank": 32
+ },
+ {
+  "q": "Why did my teammate's code disappear after I pushed?",
+  "target": "feedback_force_with_lease_never_bare_force",
+  "rank": 34
+ },
+ {
+  "q": "Why am I still getting a 400 error from ACS?",
+  "target": "reference_dgprops_hook_works_and_google_still_denies",
+  "rank": 34
+ },
+ {
+  "q": "Why am I not getting alerts when my tasks finish?",
+  "target": "feedback_a_detached_job_never_notifies_me",
+  "rank": 36
+ },
+ {
+  "q": "My old phone is gone but I'm not getting texts on my new one",
+  "target": "reference_google_rcs_deactivation_page_releases_the_msisdn",
+  "rank": 36
+ },
+ {
+  "q": "Does Phil have a specific maintenance window for updates?",
+  "target": "feedback_friday_evening_is_the_preferred_change_window",
+  "rank": 37
+ },
+ {
+  "q": "Should I handle the code review or pass it to an agent?",
+  "target": "feedback_aletheia_delegate_keep_context_clean",
+  "rank": 38
+ },
+ {
+  "q": "Why does my RCS connection fail closed on one service but open on the other?",
+  "target": "reference_acs_and_constellation_fail_in_opposite_directions",
+  "rank": 39
+ },
+ {
+  "q": "How do I find hidden bugs in my test suite?",
+  "target": "feedback_amputate_the_behaviour_dont_only_mutate_it",
+  "rank": 39
+ },
+ {
+  "q": "Does the system truncate data if the file is too large?",
+  "target": "feedback_memory_file_size_management",
+  "rank": 40
+ },
+ {
+  "q": "Why is my script returning exit code 0 despite failing to generate output?",
+  "target": "feedback_succeeds_with_zero_is_this_codebases_signature_failure",
+  "rank": 41
+ },
+ {
+  "q": "Why is my project management tool lying about what shipped?",
+  "target": "feedback_an_epic_is_not_done_until_its_children_are",
+  "rank": 42
+ },
+ {
+  "q": "How do I clear out old build files?",
+  "target": "feedback_instrumentation_artifact_cleanup_strategy",
+  "rank": 43
+ },
+ {
+  "q": "How do I prevent || true from causing subsequent commands to execute on failure?",
+  "target": "feedback_a_gate_wrapped_in_or_true_must_not_be_followed_by_cleanup_in_the_same_command",
+  "rank": 43
+ },
+ {
+  "q": "How do I measure if a policy is effective rather than just recent?",
+  "target": "feedback_compliance_tracks_recency_of_the_last_visible_failure",
+  "rank": 44
+ },
+ {
+  "q": "Why are my Aletheia agents failing to provide feedback on this repo?",
+  "target": "feedback_aletheia_personas_are_not_general_reviewers",
+  "rank": 45
+ },
+ {
+  "q": "Is there a way to check if this metric was already recorded?",
+  "target": "feedback_the_baseline_may_already_be_committed",
+  "rank": 46
+ },
+ {
+  "q": "Why do I only see linting results after a file write but not after a read?",
+  "target": "reference_serena_edits_get_no_lsp_plugin_diagnostics",
+  "rank": 46
+ },
+ {
+  "q": "Why did my git commit go through even though my tests failed?",
+  "target": "feedback_never_commit_in_the_same_command_as_the_check_its_message_claims",
+  "rank": 46
+ },
+ {
+  "q": "Why do I see signature errors in my test environment but not on the official OS?",
+  "target": "feedback_the_calyxos_signature_gate_is_a_TEST_RIG_artifact_not_a_bounty_blocker",
+  "rank": 49
+ },
+ {
+  "q": "Why don't my tests catch destructive file system operations?",
+  "target": "feedback_a_green_gate_says_nothing_about_what_checkout_will_do",
+  "rank": 49
+ }
+]
